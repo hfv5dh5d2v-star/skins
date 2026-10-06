@@ -1,36 +1,29 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 
-buttons = InlineKeyboardMarkup(
-
-    inline_keyboard= [
+reply_buttons = ReplyKeyboardMarkup(
+    keyboard=[
         [
-
-            InlineKeyboardButton(text = "Подтвердить", callback_data='confirm_reg'),
-
-            InlineKeyboardButton(text = 'начать заного', callback_data='restart_reg')
-
-        ]
-])
-
-gender_button = InlineKeyboardMarkup(
-
-    inline_keyboard =[
+            KeyboardButton(text="Python"),
+            KeyboardButton(text="JavaScript")
+        ],
         [
-            InlineKeyboardButton(text = 'женский', callback_data='female'),
-            InlineKeyboardButton(text = 'мужской', callback_data='male')
+            KeyboardButton(text="Java")
         ]
-])
+    ],
+    resize_keyboard=True
+)
 
 
-edit_buttons = InlineKeyboardMarkup(
+inline_buttons = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text = 'Имя', callback_data= 'edit_name'), 
-            InlineKeyboardButton(text = 'Возрост', callback_data='edit_age')
-        ], 
+            InlineKeyboardButton(text = 'Python', url = 'https://docs.python.org/3/')
+        ],
         [
-            InlineKeyboardButton(text='Город',callback_data='edit_city'),
-            InlineKeyboardButton(text='Пол', callback_data='edit_gender')
+            InlineKeyboardButton(text = 'Java', url = 'https://docs.oracle.com/en/java/')
+        ],
+        [
+            InlineKeyboardButton(text = 'JavaScript', url = 'https://developer.mozilla.org/en-US/docs/Web/JavaScript')
         ]
     ]
 )
