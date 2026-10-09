@@ -1,10 +1,16 @@
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from tools.keybuttons import reply_buttons, inline_buttons
+from aiogram.fsm.context import FSMContext
+from tools.keybuttons import reply_buttons, inline_buttons, questions_buttons
+from tools.questions import QUESTIONS
 
 router = Router()
+
+class StartTest(StatesGroup):
+    waiting_answer = State()
 
 @router.message(CommandStart())
 async def start(message: Message, state: FSMContext):
@@ -13,7 +19,7 @@ async def start(message: Message, state: FSMContext):
 
 @router.message(Command('help'))
 async def cmd_help(message: Message):
-    await message.answer(f'/start - начать работу с ботом \n /help - помощь для ориентации')
+    await message.answer(f'/start - начать работу с ботом \n /help - помощь для ориентации', reply_markup = questions_buttons)
 
 @router.message(Command('about'))
 async def cmd_about(message: Message):
@@ -49,6 +55,47 @@ async def cmd_java(message: Message):
     '(благодаря JVM). Активно используется в корпоративной разработке, ' \
     'банках и создании Android-приложений. ')
 
+
+@router.callback_query(F.data == "start_test")
+async def start_test(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
+
+
+    await state.update_data(questions=QUESTIONS, index=0, score=0)
+    await state.set_state(StartTest.waiting_answer)
+
+    await callback.message.answer(f"Вопрос 1: {QUESTIONS[0]['q']}")
+
+
+
+@router.message(StartTest.waiting_answer)
+async def user_answer(message: Message, state: FSMContext):
+    data = await state.get_data()
+    questions = data["questions"]
+    index = data["index"]
+    score = data["score"]
+
+    q = questions[index]
+
+    is_correct = message.text.strip().lower() == q["a"].strip().lower()
+    
+
+    if is_correct:
+        score += 1
+        await message.answer("Правильно, +1")
+    else:
+        await message.answer(f"Неверно. Правильный ответ: {q["a"]}")
+
+
+
+    index += 1
+    if index == len(questions):
+        await message.answer(f"Конец! Счет: {score}/{len(questions)} \n хочешь пройти тест заново?", reply_markup = questions_buttons)
+        await state.clear()
+    else:
+        await state.update_data(index=index, score=score)
+        await message.answer(f"Вопрос {index + 1}: {questions[index]["q"]}")
+        
     
 @router.message()
 async def echo(message: Message):

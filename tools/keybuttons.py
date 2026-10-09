@@ -27,3 +27,11 @@ inline_buttons = InlineKeyboardMarkup(
         ]
     ]
 )
+
+questions_buttons = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text = 'Начать тест', callback_data = 'start_test')
+        ]
+    ]
+)
